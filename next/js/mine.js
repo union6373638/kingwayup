@@ -1,11 +1,11 @@
-function thankyou_message() {
-    var thankyouMessage = document.querySelector('.thankyou_message');
-
-    // Always reveal the thank you panel when called, without assessing form state
-    if (thankyouMessage) {
-        thankyouMessage.style.display = "block";
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.querySelector('');
+    
+    if (form) {
+        form.addEventListener('submit', function (event) {
+            // Stops the form from submitting or refreshing the page
+            event.preventDefault(); 
+            alert("Form submission is disabled.");
+        });
     }
-}
-
-// REMOVED: Form tag scanning triggers 
-// REMOVED: Form value verification conditions (.value != null)
+});
